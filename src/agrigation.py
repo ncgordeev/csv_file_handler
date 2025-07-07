@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Union
 
+from src.exceptions import CSVProcessorError
 
-class AggregationFunction(ABC):
+
+class Aggregator(ABC):
     """Базовый класс для функции агрегации."""
 
     @abstractmethod
@@ -11,7 +13,7 @@ class AggregationFunction(ABC):
         pass
 
 
-class AvgFunction(AggregationFunction):
+class AverageAggregator(Aggregator):
     """Среднее значение."""
 
     def calculate(self, values: List[Union[int, float]]) -> Union[int, float]:
@@ -20,7 +22,7 @@ class AvgFunction(AggregationFunction):
         return sum(values) / len(values)
 
 
-class MinFunction(AggregationFunction):
+class MinAggregator(Aggregator):
     """Минимальное значение."""
 
     def calculate(self, values: List[Union[int, float]]) -> Union[int, float]:
@@ -29,10 +31,34 @@ class MinFunction(AggregationFunction):
         return min(values)
 
 
-class MaxFunction(AggregationFunction):
+class MaxAggregator(Aggregator):
     """Максимальное значение."""
 
     def calculate(self, values: List[Union[int, float]]) -> Union[int, float]:
         if not values:
             return 0
         return max(values)
+
+
+class AggregatorFactory:
+    """Фабрика агрегаторов"""
+
+    _aggregators = {
+        "avg": AverageAggregator,
+        "min": MinAggregator,
+        "max": MaxAggregator,
+    }
+
+    @classmethod
+    def create_aggregator(cls, operation: str) -> Aggregator:
+        """Создание агрегатора по строковому представлению"""
+        operation = operation.lower()
+        if operation not in cls._aggregators:
+            raise CSVProcessorError(f"Неподдерживаемая операция агрегации: {operation}")
+
+        return cls._aggregators[operation]()
+
+    @classmethod
+    def get_supported_operations(cls) -> list[str]:
+        """Получение списка поддерживаемых операций"""
+        return list(cls._aggregators.keys())
