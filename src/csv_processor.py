@@ -3,8 +3,12 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from src.agrigation import AggregatorFactory
-from src.exceptions import (CSVProcessorError, DataProcessingError,
-                            InvalidColumnError, InvalidOperatorError)
+from src.exceptions import (
+    CSVProcessorError,
+    DataProcessingError,
+    InvalidColumnError,
+    InvalidOperatorError,
+)
 from src.operators import OperatorFactory
 
 

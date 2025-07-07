@@ -40,7 +40,7 @@ class EqualOperator(FilterOperator):
         try:
             return float(value) == float(target)
         except (ValueError, TypeError):
-            return str(value) == str(target)
+            return str(value).lower() == str(target).lower()
 
 
 class OperatorFactory:
